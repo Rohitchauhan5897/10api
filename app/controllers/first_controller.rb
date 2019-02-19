@@ -26,7 +26,7 @@ before_action  :current_user , except: [:create_user,:login]
 			if !@token.present?
 			 session[:auth1_id]=@temp
 			 @session=Session1.create!(token:@temp,auth1_id:auth.id)
-			render json:{code:200,message:"logged in successfully", userinfo:userinfo}
+			render json:{code:200,message:"logged in successfully", userinfo:userinfo.first}
 			end
 		else
 		    render json:{code:400,message:"Enter Correct Username or Password"}	
