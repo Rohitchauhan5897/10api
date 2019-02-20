@@ -18,16 +18,14 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 
 	def login
-		@token =get_logintoken(params[:token])
 		userinfo = get_user_details(params[:email],params[:email])
 		auth = userinfo.present? ? userinfo.first.auth1 : false
 		if userinfo.present? && auth.authenticate(params[:password])
-			@temp=SecureRandom.hex
-			if !@token.present?
-			 	session[:auth1_id]=@temp
-				@session=Session1.create!(token:@temp,auth1_id:auth.id)
-				render json:{code:200,message:"logged in successfully", userinfo:userinfo.first}
-			end
+			@temp = SecureRandom.hex
+			#if !temp.present?
+				@session = Session1.create!(token:@temp,auth1_id:auth.id)
+				render json:{code:200,message:"logged in successfully", user:user_method(userinfo.first,@temp)}
+			#end
 		else
 		    render json:{code:400,message:"Enter Correct Username or Password"}	
 		end    
@@ -44,12 +42,13 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 
 	def updateprofile
-		token=Session1.find_by_token(params[:token])
-		user = token.present? ? token.auth1.user1 : nil
-		p token.auth1.user1
-		if user.present?
-			user.update(firstname:params[:firstname], lastname:params[:lastname], contact_no:params[:contact_no],gender:params[:gender],dob:params[:dob])
-			render json:{code:200,message:"Profile Update successfully", user:user}
+		@token=Session1.find_by_token(params[:token])
+		userinfo = @token.present? ? @token.auth1.user1 : nil
+
+		# p token.auth1.user1
+		if userinfo.present?
+			userinfo.update(firstname:params[:firstname], lastname:params[:lastname], contact_no:params[:contact_no],gender:params[:gender],dob:params[:dob])
+			render json:{code:200,message:"Profile Update successfully", user:user_method(userinfo,@token.token)}
       	 else
        		render json:{code:400,message:"Profile not Update"}	
 		end 

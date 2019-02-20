@@ -22,4 +22,8 @@ class User1 < ApplicationRecord
 		where("email = ? or username = ?",email,username)
 	end
 
+	def self.as_json()
+		as_json()
+	end	
+
 end
