@@ -65,7 +65,7 @@ before_action  :current_user , except: [:create_user,:login]
 		 	 		authenticate.update(password:params[:new_password])
 							render json:{code:200,message:"Password Update successfully",user:user_method(authenticate.as_json(only:[:id]),usertoken.token)}
 			else
-								render json:{code:400,message:"Profile Does not Update successfully"}
+								render json:{code:400,message:"Password Does not Update successfully"}
 			end
 	end
 end
