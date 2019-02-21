@@ -21,7 +21,6 @@ module FirstHelper
 		end
 
 		def user_method userinfo,temp
-			p userinfo
 			userinfo.as_json.merge(token:temp)
 		end
 end

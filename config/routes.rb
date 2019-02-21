@@ -3,5 +3,6 @@ Rails.application.routes.draw do
 	post "first/login" => "first#login"
 	get  "first/destroy/token/:token" => "first#destroy"
 	post "first/updateprofile" => "first#updateprofile"
+	post "first/changepassword" => "first#changepassword"
 
 end

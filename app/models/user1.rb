@@ -8,6 +8,10 @@ class User1 < ApplicationRecord
 	validates :gender, presence: true
 	validates :dob, presence: true
 
+	# def as_json()
+	# 	as_json()
+	# end
+
 	def self.take_email email
   		 find_by_email(email)
   	end
@@ -25,5 +29,6 @@ class User1 < ApplicationRecord
 	def self.as_json()
 		as_json()
 	end	
+	
 
 end
