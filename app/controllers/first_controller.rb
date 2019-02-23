@@ -70,20 +70,25 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 
 	def forgetpassword
-						user = get_user(params[:email])
-					 auth	= Auth1.find_by(user1_id:user.id) 
-					     
-						 # @sessioninfo=Session1.find_by_token(params[:token])
-						 #p @authinfo_password
-						if !user.present?
-										render json:{message: "Email is not Present"}
-						else
-									@otp=(SecureRandom.random_number(9e5) + 1e5).to_i
-									 auth.update(otp:@otp)
-									UserMailer.send_otp(@otp,user.email).deliver_now
-									render json:{code:200, message:"OTP has been sent successfully"}
-						end
+		begin
+			if params[:email].present?
+				user = get_user(params[:email])
+				auth	= Auth1.find_by(user1_id:user.id) 
+				if !user.present?
+					send_json_method(404,"User does not exists!")
+				else
+					@otp=(SecureRandom.random_number(9e5) + 1e5).to_i
+					auth.update(otp:@otp)
+					UserMailer.send_otp(@otp,user.email).deliver_now
+					send_json_method(200,"OTP has been sent successfully")
+				end
+			else
+				send_json_method(400,"Parameter required!")
+			end
+		rescue Exception => e
+			send_json_method(500,e.message)
 		end
+	end
 
 			def resetpassword
 						begin
