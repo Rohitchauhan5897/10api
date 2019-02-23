@@ -73,10 +73,10 @@ before_action  :current_user , except: [:create_user,:login]
 		begin
 			if params[:email].present?
 				user = get_user(params[:email])
-				auth	= Auth1.find_by(user1_id:user.id) 
 				if !user.present?
 					send_json_method(404,"User does not exists!")
 				else
+					auth	= Auth1.find_by(user1_id:user.id) 
 					@otp=(SecureRandom.random_number(9e5) + 1e5).to_i
 					auth.update(otp:@otp)
 					UserMailer.send_otp(@otp,user.email).deliver_now
