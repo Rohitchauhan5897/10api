@@ -71,18 +71,15 @@ before_action  :current_user , except: [:create_user,:login]
 
 	def forgetpassword
 						user = get_user(params[:email])
-						#  p "======================"
-						# p user.id
 					 auth	= Auth1.find_by(user1_id:user.id) 
 					     
-						 @sessioninfo=Session1.find_by_token(params[:token])
-						 
-						 p @authinfo_password
+						 # @sessioninfo=Session1.find_by_token(params[:token])
+						 #p @authinfo_password
 						if !user.present?
 										render json:{message: "Email is not Present"}
 						else
 									@otp=(SecureRandom.random_number(9e5) + 1e5).to_i
-									auth.update(otp:@otp)
+									 auth.update(otp:@otp)
 									UserMailer.send_otp(@otp,user.email).deliver_now
 									render json:{code:200, message:"OTP has been sent successfully"}
 						end
