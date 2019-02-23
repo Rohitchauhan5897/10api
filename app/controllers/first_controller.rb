@@ -70,7 +70,7 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 
 	def forgetpassword
-		begin
+		# begin
 			if params[:email].present?
 				user = get_user(params[:email])
 				if !user.present?
@@ -85,9 +85,9 @@ before_action  :current_user , except: [:create_user,:login]
 			else
 				send_json_method(400,"Parameter required!")
 			end
-		rescue Exception => e
-			send_json_method(500,e.message)
-		end
+		# rescue Exception => e
+		# 	send_json_method(500,e.message)
+		# end
 	end
 
 			def resetpassword
