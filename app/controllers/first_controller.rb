@@ -102,19 +102,24 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 	
 	def login_with_social
-
+							if !(firstname=" " && lastname=" " && username=" " && email=" " && contact_no=" " && gender=" " && dob=" ")
 					  							 if params[:email].present?	
-					 													user=get_user(params[:email])
-					 													if user.present?
-					 																authinfo=user.auth1
+					 													user = get_user(params[:email]) 
+					 													if user.present? && user.valid?
+					 																authinfo = user.auth1
 					 											 				create_social_auth(user,params[:device_type],params[:device_id],authinfo)					 													
 					 																render json:{code:200,message:"login Successful",user:user}
 	 																	else 	
-	 																				social_user=create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob])
+	 																				social_user = create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob])
 	 																				render json:{code:200,message:" user login Successful",user:social_user}
 																			end
+															else
+																			render json:{code:400,message:"Email con not be blank"}
 					  								end
-	end
+								else
+															render json:{code:400,message:"Field can't be blank"}
+								end
+			end
 end
 
 

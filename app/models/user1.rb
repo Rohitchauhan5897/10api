@@ -5,7 +5,7 @@ class User1 < ApplicationRecord
 	validates :lastname, presence: true
 	validates :username, presence: true
 	validates :email, presence: true
-	validates :contact_no, presence: true ,uniqueness:true
+	validates :contact_no, presence: true 
 	validates :gender, presence: true
 	validates :dob, presence: true
 
@@ -36,7 +36,7 @@ class User1 < ApplicationRecord
 	end	
 	
 	def self.generate_social_user(device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob)
-		# authinfo=user.auth1SecureRandom.hexn
+		# begin
 		pwd=(SecureRandom.random_number(9e5) + 1e5).to_i
 		token=SecureRandom.hex
 		social_user=new(firstname:firstname,lastname:lastname,username:username,email:email,contact_no:contact_no,gender:gender,dob:dob)
@@ -52,7 +52,8 @@ class User1 < ApplicationRecord
 					social_user
 				end
 			end
-
 		end
+		# rescue Exception => e
+	 #    render json:{code:401,message: "#{e}"}
 	end
 end
