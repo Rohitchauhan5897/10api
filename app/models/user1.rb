@@ -1,6 +1,6 @@
 class User1 < ApplicationRecord
 	has_one :auth1
-	has_many :socialauth
+	has_many :socialauths
 	validates :firstname, presence: true
 	validates :lastname, presence: true
 	validates :username, presence: true
