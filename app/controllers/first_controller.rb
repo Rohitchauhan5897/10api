@@ -108,10 +108,12 @@ before_action  :current_user , except: [:create_user,:login]
 					 													if user.present?
 					 																authinfo=user.auth1
 					 											 				social_user_info=create_social_auth(user,params[:device_type],params[:device_id],authinfo)
-					 																send_json_method(code:200,Message:"login Successful"user:social_user_info)
+					 																# send_json_method(code:200,Message:"login Successful"user:social_user_info)
+					 																render json:{code:200,message:"login Successful"user:social_user_info}
 	 																	else 						
 	 																				create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob])
-	 																				send_json_method(code:200,Message:"login Successful")
+	 																				# send_json_method(code:200,Message:"login Successful")
+	 																				render json:{code:200,message:"login Successful"user:social_user_info}
 																			end
 					  								end
 	end
