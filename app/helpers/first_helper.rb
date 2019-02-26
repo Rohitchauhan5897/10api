@@ -20,6 +20,10 @@ module FirstHelper
 		session[:auth1_id]=@temp
 		end
 
+		 # def get_social_user_detail email,contact_no
+		 #  	User1.find_user_by_email_or_contact(email,contact_no)
+		 # end
+
 		def user_method userinfo,temp
 			userinfo.as_json.merge(token:temp)
 		end

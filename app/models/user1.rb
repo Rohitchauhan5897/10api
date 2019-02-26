@@ -5,7 +5,7 @@ class User1 < ApplicationRecord
 	validates :lastname, presence: true
 	validates :username, presence: true
 	validates :email, presence: true
-	validates :contact_no, presence: true
+	validates :contact_no, presence: true ,uniqueness:true
 	validates :gender, presence: true
 	validates :dob, presence: true
 
@@ -26,6 +26,10 @@ class User1 < ApplicationRecord
 	def self.find_email_or_username email,username
 		where("email = ? or username = ?",email,username)
 	end
+
+	 # def self.find_user_by_email_or_contact email,contact_no
+	 # 	where("email = ? or contact_no = ?",email,contact_no)
+	 # end
 
 	def self.as_json()
 		as_json()
