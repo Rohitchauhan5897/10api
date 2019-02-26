@@ -39,16 +39,17 @@ class User1 < ApplicationRecord
 		# authinfo=user.auth1SecureRandom.hexn
 		pwd=(SecureRandom.random_number(9e5) + 1e5).to_i
 		token=SecureRandom.hex
-		user=new(firstname:firstname,lastname:lastname,username:username,email:email,contact_no:contact_no,gender:gender,dob:dob)
-		user.save
-		if user.present?
-			user_id=user.id
+		social_user=new(firstname:firstname,lastname:lastname,username:username,email:email,contact_no:contact_no,gender:gender,dob:dob)
+		social_user.save
+		if social_user.present?
+			user_id=social_user.id
 			auth=Auth1.create(user1_id:user_id,password_digest:pwd)
 			if auth
 				auth_id=auth.id
 				session=Session1.create(auth1_id:auth_id,token:token)
 				if session 
-					Socialauth.create(user1_id:user.id,device_type:device_type,device_id:device_id)
+					Socialauth.create(user1_id:social_user.id,device_type:device_type,device_id:device_id)
+					social_user
 				end
 			end
 
