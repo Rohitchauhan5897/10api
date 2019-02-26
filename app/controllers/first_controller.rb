@@ -102,7 +102,7 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 	
 	def login_with_social
-							if !(firstname=" " && lastname=" " && username=" " && email=" " && contact_no=" " && gender=" " && dob=" ")
+							if (params[:firstname].present? && params[:lastname].present? && params[:username].present? && params[:email].present? && params[:contact_no].present? && params[:gender].present? && params[:dob].present?)
 					  							 if params[:email].present?	
 					 													user = get_user(params[:email]) 
 					 													if user.present? && user.valid?
