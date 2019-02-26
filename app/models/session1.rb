@@ -4,5 +4,4 @@ class Session1 < ApplicationRecord
   def self.find_token token
   		find_by_token(token)
     end
-
 end

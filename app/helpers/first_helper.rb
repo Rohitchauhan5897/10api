@@ -23,4 +23,15 @@ module FirstHelper
 		def user_method userinfo,temp
 			userinfo.as_json.merge(token:temp)
 		end
+
+		def create_social_auth user,device_type,device_id,authinfo
+		 Socialauth.create_social_user(user,device_type,device_id,authinfo)
+    	end
+
+    	# def create_social_session token,auth1_id
+    	# Session1.create_social_session(token,auth1_id)
+    	# end
+    	def create_user_with_signup device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob
+    		User1.generate_social_user(device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob)
+    	end
 end

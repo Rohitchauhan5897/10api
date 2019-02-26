@@ -56,54 +56,66 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 
 	def changepassword 
-			usertoken = Session1.find_by_token(params[:token])
-			# p $userinfo
-			# password = $userinfo.present? ? $userinfo.first.auth1 : nil
-			password = usertoken.auth1
-		 authenticate =password.authenticate(params[:old_password])		
+								usertoken = Session1.find_by_token(params[:token])
+								# p $userinfo
+								# password = $userinfo.present? ? $userinfo.first.auth1 : nil
+								password = usertoken.auth1
+		 					authenticate =password.authenticate(params[:old_password])		
 		 if authenticate.present? && usertoken.present?
-		 	 		authenticate.update(password:params[:new_password])
-							render json:{code:200,message:"Password Update successfully",user:user_method(authenticate.as_json(only:[:id]),usertoken.token)}
+		 	 			authenticate.update(password:params[:new_password])
+								render json:{code:200,message:"Password Update successfully",user:user_method(authenticate.as_json(only:[:id]),usertoken.token)}
 			else
 								render json:{code:400,message:"Password Does not Update successfully"}
 			end
 	end
 
 	def forgetpassword
-		# begin
-			if params[:email].present?
-				user = get_user(params[:email])
-				if !user.present?
-					send_json_method(404,"User does not exists!")
-				else
-					auth	= Auth1.find_by(user1_id:user.id) 
-					@otp=(SecureRandom.random_number(9e5) + 1e5).to_i
-					auth.update(otp:@otp)
-					UserMailer.send_otp(@otp,user.email).deliver_now
-					send_json_method(200,"OTP has been sent successfully")
-				end
-			else
-				send_json_method(400,"Parameter required!")
-			end
-		# rescue Exception => e
-		# 	send_json_method(500,e.message)
-		# end
+							# begin
+							if params[:email].present?
+											user = get_user(params[:email])
+														if !user.present?
+																	send_json_method(404,"User does not exists!")
+														else
+																		auth	= Auth1.find_by(user1_id:user.id) 
+																		@otp=(SecureRandom.random_number(9e5) + 1e5).to_i
+																		auth.update(otp:@otp)
+																		UserMailer.send_otp(@otp,user.email).deliver_now
+																		send_json_method(200,"OTP has been sent successfully")
+														end
+							else
+											send_json_method(400,"Parameter required!")
+							end
 	end
 
-			def resetpassword
+	def resetpassword
 						begin
 						auth = Auth1.find_by_otp(params[:otp])
-						if auth.present?
-									change_password = auth.update(password:params[:new_password])
-									render json:{code:200,message:"password has been updated successfully"}
-						else
-									render json:{code:400, message: "Sorry you entered the wrong OTP,try again..!"}
-			end
-			rescue Exception => e
-				render json:{code:401,message: "#{e}"}
-			end
-end
+									if auth.present?
+													change_password = auth.update(password:params[:new_password])
+													render json:{code:200,message:"password has been updated successfully"}
+									else
+													render json:{code:400, message: "Sorry you entered the wrong OTP,try again..!"}
+									end
+													rescue Exception => e
+													render json:{code:401,message: "#{e}"}
+						end
+	end
 
+
+	
+	def login_with_social
+					 if params[:email].present?	
+					 									user=get_user(params[:email])
+					 									if user.present?
+					 													authinfo=user.auth1
+					 											 	create_social_auth(user,params[:device_type],params[:device_id],authinfo)
+					 													send_json_method(200,"login Successful")
+	 													else 						
+	 																	create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob])
+	 																	send_json_method(200,"login Successful")
+															end
+					 end
+	end
 end
 
 

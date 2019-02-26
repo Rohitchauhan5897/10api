@@ -6,4 +6,5 @@ Rails.application.routes.draw do
 	post "first/changepassword" => "first#changepassword"
 	post "first/forgetpassword" => "first#forgetpassword"
 	post "first/resetpassword" => "first#resetpassword"
+	post "first/login_with_social" => "first#login_with_social"
 end
