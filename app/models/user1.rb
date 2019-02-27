@@ -35,11 +35,11 @@ class User1 < ApplicationRecord
 		as_json()
 	end	
 	
-	def self.generate_social_user(device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob)
+	def self.generate_social_user(device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob,url,image)
 		# begin
 		pwd=(SecureRandom.random_number(9e5) + 1e5).to_i
 		token=SecureRandom.hex
-		social_user=new(firstname:firstname,lastname:lastname,username:username,email:email,contact_no:contact_no,gender:gender,dob:dob)
+		social_user = new(firstname:firstname,lastname:lastname,username:username,email:email,contact_no:contact_no,gender:gender,dob:dob,secure_url:url,image:image)
 		social_user.save
 		if social_user.present?
 			user_id=social_user.id

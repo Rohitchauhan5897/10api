@@ -3,23 +3,26 @@ class FirstController < ApplicationController
 before_action  :current_user , except: [:create_user,:login]
 
 	def create_user
-								 begin					 	
+								 # begin					 	
 									@user1 =get_user(params[:email])
         	@user2 =get_user2(params[:username])
        					if !@user1.present? && !@user2.present?
-        		  			user =User1.create!(firstname:params[:firstname], lastname:params[:lastname], username:params[:username],email:params[:email], contact_no: params[:contact_no], gender:params[:gender], dob:params[:dob])
+       							 result = Cloudinary::Uploader.upload(params[:image])
+       							 # p "================="
+       							 # p result["secure_url"]
+        		  			user =User1.create!(firstname:params[:firstname], lastname:params[:lastname], username:params[:username],email:params[:email], contact_no: params[:contact_no], gender:params[:gender], dob:params[:dob],secure_url:result["secure_url"],image:params[:image])
            		  		if user.present?
            									info=Auth1.create!(password:params[:password],user1_id: user.id)	
-              						render json:{code:200, message: "User Signed Up Successfully!", user:user}
+              						render json:{code:200, message: "User Signed Up Successfully!", user:user.as_json(only:[:firstname,:lastname,:username,:email,:contact_no,:gender,:dob,:secure_url])}
         		   				else
         												render json:{code:500, message: "Bad Request!!"}
   			   								end
         				else
          		   render json:{code:400, message: "User already exists in the database!"}
 	    						end
-	    	rescue Exception => e
-	    		render json:{code:401,message: "#{e}"}
-    		end
+	    	# rescue Exception => e
+	    	# 	render json:{code:401,message: "#{e}"}
+    		# end
 	end
 
 	def login
@@ -48,8 +51,15 @@ before_action  :current_user , except: [:create_user,:login]
 										@token=Session1.find_by_token(params[:token])
 										userinfo = @token.present? ? @token.auth1.user1 : nil
 										if userinfo.present?
+											     if !params[:image].present?
+
 																	userinfo.update(firstname:params[:firstname], lastname:params[:lastname], contact_no:params[:contact_no],gender:params[:gender],dob:params[:dob])
 																	render json:{code:200,message:"Profile Update successfully", user:user_method(userinfo,@token.token)}
+      	 								else
+      	 									result = Cloudinary::Uploader.upload(params[:image])
+      	 										userinfo.update(firstname:params[:firstname], lastname:params[:lastname], contact_no:params[:contact_no],gender:params[:gender],dob:params[:dob],secure_url:result["secure_url"],image:params[:image])
+																	render json:{code:200,message:"Profile Update successfully", user:user_method(userinfo,@token.token)}
+      	 								end
       	 		else
        										render json:{code:400,message:"Profile not Update"}	
 										end 
@@ -102,49 +112,24 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 	
 	def login_with_social
-							if (params[:firstname].present? && params[:lastname].present? && params[:username].present? && params[:email].present? && params[:contact_no].present? && params[:gender].present? && params[:dob].present?)
-					  							 if params[:email].present?	
-					 													user = get_user(params[:email]) 
-					 													if user.present? && user.valid?
-					 																authinfo = user.auth1
-					 											 				create_social_auth(user,params[:device_type],params[:device_id],authinfo)					 													
-					 																render json:{code:200,message:"login Successful",user:user}
-	 																	else 	
-	 																				social_user = create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob])
-	 																				render json:{code:200,message:" user login Successful",user:social_user}
-																			end
-															else
-																			render json:{code:400,message:"Email con not be blank"}
-					  								end
-								else
-															render json:{code:400,message:"Field can't be blank"}
-								end
+		if (params[:firstname].present? && params[:lastname].present? && params[:username].present? && params[:email].present? && params[:contact_no].present? && params[:gender].present? && params[:dob].present?)
+				 if params[:email].present?	
+							user = get_user(params[:email]) 
+							if user.present? && user.valid?
+										authinfo = user.auth1
+					 				create_social_auth(user,params[:device_type],params[:device_id],authinfo)					 													
+										render json:{code:200,message:"login Successful",user:user}
+							else 	
+									 result = Cloudinary::Uploader.upload(params[:image])
+									 url = result["secure_url"]
+										social_user = create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob],url,params[:image])
+										render json:{code:200,message:"login Successful",user:social_user.as_json(only:[:firstname,:lastname,:username,:email,:gender,:contact_no,:dob,:secure_url])}
+							end
+					else
+									render json:{code:400,message:"Email con not be blank"}
+					end
+			else
+										render json:{code:400,message:"Field can't be blank"}
 			end
+	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def login_with_social
-
-# 					 
-# 	end
-
-
-			 

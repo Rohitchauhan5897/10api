@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: imageapi
+  api_key: '264341782927642'
+  api_secret: wDjkSD3Sy21EC4l76M4ZXzr5BZA
+  enhance_image_tag: true
+  static_file_support: false
+production:
+  cloud_name: imageapi
+  api_key: '264341782927642'
+  api_secret: wDjkSD3Sy21EC4l76M4ZXzr5BZA
+  enhance_image_tag: true
+  static_file_support: true
+test:
+  cloud_name: imageapi
+  api_key: '264341782927642'
+  api_secret: wDjkSD3Sy21EC4l76M4ZXzr5BZA
+  enhance_image_tag: true
+  static_file_support: false
