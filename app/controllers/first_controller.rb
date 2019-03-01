@@ -7,10 +7,14 @@ before_action  :current_user , except: [:create_user,:login]
 									@user1 =get_user(params[:email])
         	@user2 =get_user2(params[:username])
        					if !@user1.present? && !@user2.present?
-       							 result = Cloudinary::Uploader.upload(params[:image])
-       							 # p "================="
-       							 # p result["secure_url"]
-        		  			user =User1.create!(firstname:params[:firstname], lastname:params[:lastname], username:params[:username],email:params[:email], contact_no: params[:contact_no], gender:params[:gender], dob:params[:dob],secure_url:result["secure_url"],image:params[:image])
+       												if params[:image].present?
+       													 	result = Cloudinary::Uploader.upload(params[:image])
+        		  										user =User1.create!(firstname:params[:firstname], lastname:params[:lastname], username:params[:username],email:params[:email], contact_no: params[:contact_no], gender:params[:gender], dob:params[:dob],secure_url:result["secure_url"],image:params[:image])
+      		  									else
+      		  													render json:{code:400, message: "Please Enter an image!"}
+      		  													return
+      		  													# user =User1.create!(firstname:params[:firstname], lastname:params[:lastname], username:params[:username],email:params[:email], contact_no: params[:contact_no], gender:params[:gender], dob:params[:dob])
+      		  									end
            		  		if user.present?
            									info=Auth1.create!(password:params[:password],user1_id: user.id)	
               						render json:{code:200, message: "User Signed Up Successfully!", user:user.as_json(only:[:firstname,:lastname,:username,:email,:contact_no,:gender,:dob,:secure_url])}
@@ -20,9 +24,9 @@ before_action  :current_user , except: [:create_user,:login]
         				else
          		   render json:{code:400, message: "User already exists in the database!"}
 	    						end
-	    	# rescue Exception => e
-	    	# 	render json:{code:401,message: "#{e}"}
-    		# end
+	    	 # rescue Exception => e
+	    	 # 	render json:{code:401,message: "#{e}"}
+    		 # end
 	end
 
 	def login
