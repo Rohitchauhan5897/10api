@@ -1,7 +1,7 @@
 $userinfo
 class FirstController < ApplicationController
 before_action  :current_user , except: [:create_user,:login]
-
+before_action :validate_social_auth,only: [:login_with_social]
 	def create_user
 								 # begin					 	
 									@user1 =get_user(params[:email])
@@ -116,24 +116,33 @@ before_action  :current_user , except: [:create_user,:login]
 	end
 	
 	def login_with_social
-		if (params[:firstname].present? && params[:lastname].present? && params[:username].present? && params[:email].present? && params[:contact_no].present? && params[:gender].present? && params[:dob].present?)
-				 if params[:email].present?	
+		if (params[:firstname].present? && params[:lastname].present? && params[:username].present? && params[:email].present? && params[:contact_no].present? && params[:gender].present? && params[:dob].present? && params[:image].present?)
+				 # if params[:email].present?	
 							user = get_user(params[:email]) 
 							if user.present? && user.valid?
 										authinfo = user.auth1
-					 				create_social_auth(user,params[:device_type],params[:device_id],authinfo)					 													
-										render json:{code:200,message:"login Successful",user:user}
+					 				create_social_auth(user,params[:provider_type],params[:provider_id],authinfo)					 													
+										render json:{code:200,message:"login Successful",user:user.as_json(only:[:firstname,:lastname,:username,:email,:gender,:contact_no,:dob,:secure_url])}
 							else 	
 									 result = Cloudinary::Uploader.upload(params[:image])
 									 url = result["secure_url"]
-										social_user = create_user_with_signup(params[:device_type],params[:device_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob],url,params[:image])
+										social_user = create_user_with_signup(params[:provider_type],params[:provider_id],params[:firstname],params[:lastname],params[:username],params[:email],params[:contact_no],params[:gender],params[:dob],url)
 										render json:{code:200,message:"login Successful",user:social_user.as_json(only:[:firstname,:lastname,:username,:email,:gender,:contact_no,:dob,:secure_url])}
 							end
-					else
-									render json:{code:400,message:"Email con not be blank"}
-					end
+					# else
+					# 				render json:{code:400,message:"Email con not be blank"}
+					# end
 			else
 										render json:{code:400,message:"Field can't be blank"}
 			end
 	end
+
+
+	private
+		def validate_social_auth
+			provider_type = ["google","facbook","twitter"].include?(params[:provider_type])
+			if !provider_type and !params[:provider_id].present?
+				render json:{code:404,message:!provider_type ? "Invalid provider type": "Invalid Parameter"}
+			end
+		end	
 end

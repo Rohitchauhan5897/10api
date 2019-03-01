@@ -29,14 +29,14 @@ module FirstHelper
 			userinfo.as_json.merge(token:temp)
 		end
 
-		def create_social_auth user,device_type,device_id,authinfo
-		 Socialauth.create_social_user(user,device_type,device_id,authinfo)
+		def create_social_auth user,provider_type,provider_id,authinfo
+		 Socialauth.create_social_user(user,provider_type,provider_id,authinfo)
     	end
 
     	# def create_social_session token,auth1_id
     	# Session1.create_social_session(token,auth1_id)
     	# end
-    	def create_user_with_signup device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob,url,image
-    		User1.generate_social_user(device_type,device_id,firstname,lastname,username,email,contact_no,gender,dob,url,image)
+    	def create_user_with_signup provider_type,provider_id,firstname,lastname,username,email,contact_no,gender,dob,url
+    		User1.generate_social_user(provider_type,provider_id,firstname,lastname,username,email,contact_no,gender,dob,url)
     	end
 end
