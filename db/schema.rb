@@ -24,6 +24,13 @@ ActiveRecord::Schema.define(version: 20190315125621) do
     t.index ["user1_id"], name: "index_auth1s_on_user1_id", using: :btree
   end
 
+  create_table "managers", force: :cascade do |t|
+    t.string   "name"
+    t.string   "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "session1s", force: :cascade do |t|
     t.string   "token"
     t.integer  "auth1_id"
@@ -44,26 +51,13 @@ ActiveRecord::Schema.define(version: 20190315125621) do
   create_table "user1s", force: :cascade do |t|
     t.string   "firstname"
     t.string   "lastname"
+    t.string   "username"
     t.string   "email"
     t.string   "contact_no"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string   "secure_url"
-    t.string   "address"
-    t.string   "city"
-    t.string   "state"
-  end
-
-  create_table "users", force: :cascade do |t|
-    t.string   "firstname"
-    t.string   "lastname"
-    t.string   "email"
-    t.integer  "contact"
     t.string   "gender"
     t.date     "dob"
-    t.string   "password_digest"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string   "secure_url"
   end
 
