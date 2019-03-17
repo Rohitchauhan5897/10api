@@ -1,4 +1,4 @@
-$userinfo
+# $userinfo
 class FirstController < ApplicationController
 before_action  :current_user , except: [:create_user,:login]
 before_action :validate_social_auth,only: [:login_with_social]
@@ -117,8 +117,6 @@ before_action :validate_social_auth,only: [:login_with_social]
 	
 	def login_with_social
 		if (params[:firstname].present? && params[:lastname].present? && params[:username].present? && params[:email].present? && params[:contact_no].present? && params[:gender].present? && params[:dob].present? && params[:image].present?)
-				p "+++++++++++++++++"
-				p params[:image]
 				 # if params[:email].present?	
 							user = get_user(params[:email]) 
 							if user.present? && user.valid?
@@ -138,7 +136,6 @@ before_action :validate_social_auth,only: [:login_with_social]
 										render json:{code:400,message:"Field can't be blank"}
 			end
 	end
-
 
 	private
 		def validate_social_auth
